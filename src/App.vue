@@ -13,7 +13,7 @@ const startSpriteAnimation = () => {
   spriteInterval.value = setInterval(() => {
     spriteFrame.value = (spriteFrame.value + 1) % totalSpriteFrames
     updateSpriteBackground()
-  }, 20) // 每100ms切换一帧
+  }, 20)
 }
 
 // 停止精灵图动画
@@ -50,11 +50,11 @@ const updateSpriteBackground = () => {
 
 // 初始化应用
 const initializeApp = () => {
-  // 模拟应用加载过程（3秒）
+
   setTimeout(() => {
     isAppLoaded.value = true
     stopSpriteAnimation()
-  }, 3000)
+  }, 5000)
 }
 
 onMounted(() => {
