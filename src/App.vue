@@ -108,9 +108,32 @@ const preloadAudio = (src) => {
     audio.load()
   })
 }
+}
+
+// 预加载图片
+const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = resolve
+    img.onerror = reject
+    img.src = src
+  })
+}
+
+// 预加载音频
+const preloadAudio = (src) => {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio()
+    audio.addEventListener('canplaythrough', resolve)
+    audio.addEventListener('error', reject)
+    audio.src = src
+    audio.load()
+  })
+}
 
 onMounted(() => {
   startSpriteAnimation()
+  loadAppResources() // 使用实际加载而不是定时器
   loadAppResources() // 使用实际加载而不是定时器
 })
 
@@ -156,6 +179,7 @@ onBeforeUnmount(() => {
   margin-top: 30px;
   font-size: 18px;
   font-family: Arial, sans-serif;
+  color: #ffffff;
   color: #ffffff;
 }
 
