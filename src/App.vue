@@ -1,9 +1,11 @@
 <script setup>
 import welcome from './components/welcome.vue'
+import mainApp from './components/main-app.vue'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 // 加载状态
 const isAppLoaded = ref(false)
+const currentPage = ref('welcome') // 'welcome' 或 'main'
 const spriteInterval = ref(null)
 const spriteFrame = ref(0)
 const totalSpriteFrames = 30 // 3*10精灵图总帧数
@@ -48,18 +50,68 @@ const updateSpriteBackground = () => {
   }
 }
 
-// 初始化应用
-const initializeApp = () => {
+// 处理页面跳转
+const handleNavigation = (page) => {
+  currentPage.value = page
+}
 
-  setTimeout(() => {
+// 实际加载应用资源
+const loadAppResources = async () => {
+  try {
+    // 并行加载多个资源（不包含固定延迟）
+    await Promise.all([
+      // 加载配置文件
+      fetch('/config/app-config.json').then(res => res.json()).catch(() => ({})),
+
+      // 预加载关键图片资源
+      preloadImage('/assets/background.jpg').catch(() => { }),
+      preloadImage('/assets/background-video.mp4').catch(() => { }),
+      preloadImage('/assets/musk.png').catch(() => { }),
+      preloadImage('/assets/button.png').catch(() => { }),
+      preloadImage('/assets/screen.jpg').catch(() => { }),
+
+      // 预加载音频资源
+      preloadAudio('/assets/click.mp3').catch(() => { })
+    ])
+
+    // 资源加载完成后，再额外等待2秒
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    // 所有资源加载完成并且额外等待2秒后
     isAppLoaded.value = true
     stopSpriteAnimation()
-  }, 5000)
+  } catch (error) {
+    console.error('资源加载失败:', error)
+    // 即使出错也显示主界面
+    isAppLoaded.value = true
+    stopSpriteAnimation()
+  }
+}
+
+// 预加载图片
+const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = resolve
+    img.onerror = reject
+    img.src = src
+  })
+}
+
+// 预加载音频
+const preloadAudio = (src) => {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio()
+    audio.addEventListener('canplaythrough', resolve)
+    audio.addEventListener('error', reject)
+    audio.src = src
+    audio.load()
+  })
 }
 
 onMounted(() => {
   startSpriteAnimation()
-  initializeApp()
+  loadAppResources() // 使用实际加载而不是定时器
 })
 
 onBeforeUnmount(() => {
@@ -76,8 +128,9 @@ onBeforeUnmount(() => {
   </div>
 
   <!-- 应用主内容 -->
-  <div v-show="isAppLoaded">
-    <welcome />
+  <div v-show="isAppLoaded" class="app-content">
+    <welcome v-if="currentPage === 'welcome'" @navigate="handleNavigation" />
+    <main-app v-else-if="currentPage === 'main'" @navigate="handleNavigation" />
   </div>
 </template>
 
@@ -97,13 +150,13 @@ onBeforeUnmount(() => {
 
 .loading-content {
   text-align: center;
-  color: white;
 }
 
 .loading-content p {
   margin-top: 30px;
   font-size: 18px;
   font-family: Arial, sans-serif;
+  color: #ffffff;
 }
 
 /* 精灵图加载动画 */
@@ -121,5 +174,31 @@ onBeforeUnmount(() => {
   background-position: 0 0;
 }
 
-/* 保持原有样式不变 */
+/* 全屏应用内容样式 */
+.app-content {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* 移除默认边距 */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 确保组件全屏 */
+#welcome,
+#main-app {
+  height: 100vh !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
 </style>
