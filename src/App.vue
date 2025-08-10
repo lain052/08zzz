@@ -5,10 +5,11 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 // 加载状态
 const isAppLoaded = ref(false)
-const currentPage = ref('welcome') // 'welcome' 或 'main'
+const currentPage = ref('welcome')
 const spriteInterval = ref(null)
 const spriteFrame = ref(0)
 const totalSpriteFrames = 30 // 3*10精灵图总帧数
+const showPageTransition = ref(false) // 页面跳转时的加载动画
 
 // 开始精灵图动画
 const startSpriteAnimation = () => {
@@ -52,7 +53,20 @@ const updateSpriteBackground = () => {
 
 // 处理页面跳转
 const handleNavigation = (page) => {
-  currentPage.value = page
+  if (page === 'main') {
+    // 显示页面跳转动画
+    showPageTransition.value = true
+    startSpriteAnimation()
+
+    // 模拟加载时间（可以根据实际需要调整）
+    setTimeout(() => {
+      currentPage.value = page
+      showPageTransition.value = false
+      stopSpriteAnimation()
+    }, 2000)
+  } else {
+    currentPage.value = page
+  }
 }
 
 // 实际加载应用资源
@@ -74,10 +88,10 @@ const loadAppResources = async () => {
       preloadAudio('/assets/click.mp3').catch(() => { })
     ])
 
-    // 资源加载完成后，再额外等待2秒
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // 资源加载完成后，再额外等待2.5秒
+    await new Promise(resolve => setTimeout(resolve, 2500))
 
-    // 所有资源加载完成并且额外等待2秒后
+    // 所有资源加载完成并且额外等待2.5秒后
     isAppLoaded.value = true
     stopSpriteAnimation()
   } catch (error) {
@@ -111,7 +125,7 @@ const preloadAudio = (src) => {
 
 onMounted(() => {
   startSpriteAnimation()
-  loadAppResources() // 使用实际加载而不是定时器
+  loadAppResources()
 })
 
 onBeforeUnmount(() => {
@@ -120,6 +134,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- 页面跳转加载动画 -->
+  <div v-if="showPageTransition" class="app-loading">
+    <div class="loading-content">
+      <div class="sprite-loader"></div>
+    </div>
+  </div>
   <!-- 全局加载动画 -->
   <div v-if="!isAppLoaded" class="app-loading">
     <div class="loading-content">
@@ -128,7 +148,7 @@ onBeforeUnmount(() => {
   </div>
 
   <!-- 应用主内容 -->
-  <div v-show="isAppLoaded" class="app-content">
+  <div v-show="isAppLoaded && !showPageTransition" class="app-content">
     <welcome v-if="currentPage === 'welcome'" @navigate="handleNavigation" />
     <main-app v-else-if="currentPage === 'main'" @navigate="handleNavigation" />
   </div>
