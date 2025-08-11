@@ -11,37 +11,12 @@
         <!-- 内容层 - 添加视差效果 -->
         <div class="parallax-content">
             <!-- 使用独立的 Header 组件 -->
-            <AppHeader title="zzzlibrary" :show-back="true" back-text="return" @back="goBack">
-                <template #actions>
-                    <div class="header-tabs">
-                        <button class="tab-button" :class="{ active: activeTab === 'overview' }"
-                            @click="activeTab = 'overview'">
-                            概览
-                        </button>
-                        <button class="tab-button" :class="{ active: activeTab === 'timeline' }"
-                            @click="activeTab = 'timeline'">
-                            时间线
-                        </button>
-                        <button class="tab-button" :class="{ active: activeTab === 'factions' }"
-                            @click="activeTab = 'factions'">
-                            势力团体
-                        </button>
-                        <button class="tab-button" :class="{ active: activeTab === 'disasters' }"
-                            @click="activeTab = 'disasters'">
-                            空洞灾厄
-                        </button>
-                        <button class="tab-button" :class="{ active: activeTab === 'items' }"
-                            @click="activeTab = 'items'">
-                            关键物品
-                        </button>
-                    </div>
-                </template>
-            </AppHeader>
+            <AppHeader title="zzzlibrary" :show-back="true" back-text="return" @back="goBack" :active-tab="activeTab"
+                @update:active-tab="activeTab = $event" :show-tabs="true" />
 
             <div class="main-content" ref="mainContent">
                 <div class="content">
                     <h2>zzz</h2>
-
 
                     <!-- 概览内容 -->
                     <div v-show="activeTab === 'overview'" class="tab-content">
@@ -83,6 +58,16 @@
                     <div v-show="activeTab === 'items'" class="tab-content">
                         <Items />
                     </div>
+
+                    <!-- 地图内容 -->
+                    <div v-show="activeTab === 'map'" class="tab-content">
+                        <Map />
+                    </div>
+
+                    <!-- 人工智能内容 -->
+                    <div v-show="activeTab === 'ai'" class="tab-content">
+                        <AI />
+                    </div>
                 </div>
             </div>
         </div>
@@ -95,7 +80,9 @@ import AppHeader from './AppHeader.vue'
 import Timeline from './Timeline.vue'
 import Factions from './Factions.vue'
 import Disasters from './Disasters.vue'
-import Items from './Items.vue' // 导入 Items 组件
+import Items from './Items.vue'
+import Map from './Map.vue'
+import AI from './AI.vue' // 导入人工智能组件
 // 导入图片资源
 import image1 from '../assets/8月9日 (1).png'
 import image2 from '../assets/8月9日 (1)(2).png'
@@ -385,34 +372,6 @@ onBeforeUnmount(() => {
     height: 70vh;
 }
 
-/* 标签导航样式 */
-.header-tabs {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.tab-button {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    font-size: 14px;
-}
-
-.tab-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.tab-button.active {
-    background-color: rgba(255, 255, 255, 0.3);
-    font-weight: bold;
-}
-
 .tab-content {
     min-height: 100vh;
 }
@@ -472,15 +431,6 @@ onBeforeUnmount(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .header-tabs {
-        justify-content: center;
-    }
-
-    .tab-button {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
     .card {
         min-width: 75vw;
         width: 75vw;

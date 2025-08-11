@@ -1,6 +1,6 @@
 <template>
     <div class="items-content">
-        <h3>关键物品</h3>
+        <h3>名词解释</h3>
         <div class="items-grid">
             <div class="item-card" v-for="(item, index) in items" :key="index">
                 <div class="item-icon">
@@ -39,7 +39,23 @@ const items = [
         icon: '🤖',
         name: '邦布',
         description: '由挽昼发明的人工智能辅助设备，具有多种功能，是调查员的得力助手。'
+    },
+    {
+        icon: '',
+        name: '萝卜',
+        description: '具有时效性的空洞地图'
+    },
+    {
+        icon: '',
+        name: '绳网',
+        description: '匿名论坛。'
+    },
+    {
+        icon: '',
+        name: '罗塞塔数据',
+        description: '空洞母本数据，仅有一份'
     }
+
 
 ]
 </script>
