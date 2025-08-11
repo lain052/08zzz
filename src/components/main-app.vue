@@ -30,6 +30,10 @@
                             @click="activeTab = 'disasters'">
                             空洞灾厄
                         </button>
+                        <button class="tab-button" :class="{ active: activeTab === 'items' }"
+                            @click="activeTab = 'items'">
+                            关键物品
+                        </button>
                     </div>
                 </template>
             </AppHeader>
@@ -37,17 +41,17 @@
             <div class="main-content" ref="mainContent">
                 <div class="content">
                     <h2>zzz</h2>
-                    <p>虚狩</p>
+
 
                     <!-- 概览内容 -->
                     <div v-show="activeTab === 'overview'" class="tab-content">
                         <div class="spacer-before">
-                            <div class="scroll-instruction">向下滚动查看内容</div>
+                            <div class="scroll-instruction">虚狩</div>
                         </div>
                         <div class="horizontal-scroll-wrapper" ref="scrollWrapper">
                             <div class="horizontal-container" ref="horizontalContainer">
                                 <div class="cards-container" ref="cardsContainer">
-                                    <div class="card" v-for="(item, index) in items" :key="item.id">
+                                    <div class="card" v-for="(item) in items" :key="item.id">
                                         <img :src="item.image" :alt="item.title" class="card-image" v-if="item.image">
                                         <h3>{{ item.title }}</h3>
                                         <p class="card-description">{{ item.description }}</p>
@@ -56,7 +60,7 @@
                             </div>
                         </div>
                         <div class="spacer-after">
-                            <div class="scroll-instruction">继续向下滚动</div>
+                            <div class="scroll-instruction">虚狩</div>
                         </div>
                     </div>
 
@@ -74,6 +78,11 @@
                     <div v-show="activeTab === 'disasters'" class="tab-content">
                         <Disasters />
                     </div>
+
+                    <!-- 关键物品内容 -->
+                    <div v-show="activeTab === 'items'" class="tab-content">
+                        <Items />
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,6 +95,7 @@ import AppHeader from './AppHeader.vue'
 import Timeline from './Timeline.vue'
 import Factions from './Factions.vue'
 import Disasters from './Disasters.vue'
+import Items from './Items.vue' // 导入 Items 组件
 // 导入图片资源
 import image1 from '../assets/8月9日 (1).png'
 import image2 from '../assets/8月9日 (1)(2).png'

@@ -1,8 +1,18 @@
 <template>
   <div class="disasters-content">
     <h3>空洞灾厄</h3>
+
+    <h4>主要空洞</h4>
     <div class="disasters-grid">
-      <div class="disaster-card" v-for="(disaster, index) in disasters" :key="index">
+      <div class="disaster-card" v-for="(disaster, index) in mainDisasters" :key="index">
+        <h4>{{ disaster.name }}</h4>
+        <p>{{ disaster.description }}</p>
+      </div>
+    </div>
+
+    <h4>六大空洞</h4>
+    <div class="disasters-grid">
+      <div class="disaster-card" v-for="(disaster, index) in sixMajorCavities" :key="index">
         <h4>{{ disaster.name }}</h4>
         <p>{{ disaster.description }}</p>
       </div>
@@ -11,11 +21,20 @@
 </template>
 
 <script setup>
-const disasters = [
-  { name: '零号空洞', description: '第一个出现的空洞，也是最神秘的空洞，亚契进入后尚未归还' },
+const mainDisasters = [
+  { name: '零号空洞-灵簿', description: '第一个出现的空洞，也是最神秘的空洞，亚契进入后尚未归还' },
   { name: '黑墙', description: '一种具有侵蚀性的空洞现象，曾被维克等人成功斥退' },
   { name: '巢主', description: '天空中的巨大空洞，被挽昼成功消解' },
   { name: '神的迷宫', description: '由乔伊斯只身穿越的神秘空洞，为后续探索建立了标准方案' }
+]
+
+const sixMajorCavities = [
+  { name: '克里特', description: '六大空洞之一，与新艾利都朝夕相伴' },
+  { name: '莱姆尼安', description: '六大空洞之一，规模惊人无法被剿灭' },
+  { name: '珀塞纳斯', description: '六大空洞之一，与城市共生的威胁' },
+  { name: '哈瓦瑞', description: '六大空洞之一，持续产生伴生空洞' },
+  { name: '索洛夫', description: '六大空洞之一，对城市安全构成潜在威胁' },
+  { name: '帕帕戈', description: '六大空洞之一，象征着人类的脆弱与卑微' }
 ]
 </script>
 
@@ -23,6 +42,12 @@ const disasters = [
 .disasters-content h3 {
   font-size: 28px;
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.disasters-content h4 {
+  font-size: 22px;
+  margin: 30px 0 15px 0;
   text-align: center;
 }
 
